@@ -1,23 +1,23 @@
 variable "resource_group" {
-  type        = string
   description = "Name of the Azure Resource Group"
-  default     = "rg-starterkit"
+  type        = string
+  default     = "my-cicd-rg"
 }
 
 variable "location" {
+  description = "Azure location for resources"
   type        = string
-  description = "Azure region"
-  default     = "EastUS"
+  default     = "westus2"
 }
 
 variable "storage_account_name" {
+  description = "Base name for the Azure Storage Account"
   type        = string
-  description = "Storage account name (lowercase, 3-24 chars)"
-  default     = "starterkitstorage01"
+  default     = "mycicdstorage001"
 }
 
 variable "storage_container_name" {
+  description = "Name of the Azure Storage Container"
   type        = string
-  description = "Storage container name"
-  default     = "starterkitcontainer"
+  default     = "tfstate"
 }
