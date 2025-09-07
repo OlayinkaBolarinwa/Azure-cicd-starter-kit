@@ -1,0 +1,4 @@
+﻿resource_group = \"my-cicd-rg\"
+location = \"East US\"
+storage_account_name = \"mycicdstorage001\"
+storage_container_name = \"starterkit\"
