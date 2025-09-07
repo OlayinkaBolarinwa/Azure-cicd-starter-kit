@@ -1,4 +1,4 @@
-Azure CI/CD Starter Kit
+`Azure CI/CD Starter Kit`
 
 A Terraform-based starter kit for deploying Azure infrastructure with a GitHub Actions CI/CD workflow. This project helps developers and startups quickly provision and manage Azure resources with a production-ready pipeline.
 
