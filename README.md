@@ -1,101 +1,101 @@
 Azure CI/CD Starter Kit
 
-A Terraform-based starter kit to deploy Azure Storage resources with CI/CD automation via GitHub Actions.
-This project demonstrates how to combine Infrastructure as Code (IaC) with continuous delivery pipelines, providing a reusable foundation for cloud automation projects.
+A Terraform-based starter kit for deploying Azure infrastructure with a GitHub Actions CI/CD workflow. This project helps developers and startups quickly provision and manage Azure resources with a production-ready pipeline.
 
 Features
 
-Creates an Azure Resource Group
+Deploy Azure Resource Group, Storage Account, and Blob Container.
 
-Deploys a Storage Account (Standard LRS)
+Automatically generate unique names using random_id.
 
-Creates a private Storage Container
+Azure Storage Management Policy for automated cleanup of blobs.
 
-Configures a Storage Management Policy to auto-delete block blobs older than 30 days
+GitHub Actions workflow to manage Terraform plan and apply.
 
-Fully automated CI/CD pipeline with GitHub Actions
+Terraform backend configured with Azure Blob Storage for remote state.
 
- Prerequisites
+Prerequisites
+
+Terraform >= 1.3.0
 
 Azure CLI
 
-Terraform v1.3+
+GitHub account (for GitHub Actions)
 
-GitHub account
+An Azure subscription
 
-Azure Service Principal for authentication
+Getting Started
+Clone the repository
+git clone https://github.com/OlayinkaBolarinwa/Azure-cicd-starter-kit.git
+cd Azure-cicd-starter-kit
 
- Environment Variables / Secrets
+Configure Azure CLI
+az login
+az account set --subscription <your-subscription-id>
 
+Initialize Terraform
+terraform init -reconfigure
 
-AZURE_CLIENT_ID=<your-client-id>
-AZURE_CLIENT_SECRET=<your-client-secret>
-AZURE_TENANT_ID=<your-tenant-id>
-AZURE_SUBSCRIPTION_ID=<your-subscription-id>
-
-
-Important: Never commit secrets. Add .env to .gitignore.
-
- Project Structure
-.
-├── main.tf                 # Terraform main configuration
-├── variables.tf            # Terraform input variables
-├── terraform.tfvars        # Variable values
-├── .gitignore              # Ignore sensitive files
-├── README.md               # Documentation
-└── .github/workflows/
-    └── deploy.yml          # GitHub Actions workflow
-
-Terraform Usage
-
-Initialize Terraform:
-
-terraform init
-
-
-Preview planned changes:
-
+Plan and Apply Terraform
 terraform plan
+terraform apply
 
 
-Apply changes:
+Terraform will output:
 
-terraform apply -auto-approve
+resource_group_name
 
- GitHub Actions CI/CD
+storage_account_name
 
-Trigger: Push to main branch
+storage_container_name
 
-Workflow steps:
+GitHub Actions Workflow
 
-Checkout repository
+The workflow is located in .github/workflows/deploy.yml and automatically:
 
-Setup Terraform
+Runs Terraform plan on pull requests.
 
-Authenticate to Azure using secrets
+Runs Terraform apply on merge to main.
 
-Run terraform init, plan, and apply
+Make sure your GitHub repository has secrets configured for Azure authentication:
+AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID, AZURE_SUBSCRIPTION_ID.
 
-This ensures infrastructure is deployed consistently and automatically on every update.
+Variables
 
-Recommended .gitignore
-# Terraform
-*.tfstate
-*.tfstate.backup
-.terraform/
-.terraform.lock.hcl
+All configurable variables are in Variable.tf:
 
-# IDE / Editors
-.vscode/
-.idea/
+Variable	Description	Example
+resource_group	Base name for the resource group	"my-cicd-rg"
+location	Azure region	"westus2"
+storage_account_name	Base name for storage account	"mycicdstorage001"
+storage_container_name	Base name for storage container	"my-starterkit-container"
+Cleanup
 
-# Logs
-*.log
+To destroy all resources created:
 
- With this setup, anyone can:
+terraform destroy
 
-Fork/clone the repo
+Contributing
 
-Configure secrets in GitHub Actions
+Fork the repository.
 
-Deploy Azure Storage resources with a full CI/CD pipeline
+Create a feature branch:
+
+git checkout -b feature/my-feature
+
+
+Commit your changes:
+
+git commit -am "Add new feature"
+
+
+Push to the branch:
+
+git push origin feature/my-feature
+
+
+Open a Pull Request.
+
+License
+
+MIT License © Olayinka Bolarinwa
