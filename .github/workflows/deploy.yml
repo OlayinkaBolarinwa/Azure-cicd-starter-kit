@@ -2,28 +2,38 @@ name: Terraform Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      # Step 1: Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-
-      - name: Azure Login
+      # Step 2: Login to Azure using the secret
+      - name: Login to Azure
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      # Step 3: Setup Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.13.1
+
+      # Step 4: Initialize Terraform
       - name: Terraform Init
         run: terraform init
-        working-directory: terraform
 
+      # Step 5: Plan Terraform deployment
+      - name: Terraform Plan
+        run: terraform plan
+
+      # Step 6: Apply Terraform deployment
       - name: Terraform Apply
         run: terraform apply -auto-approve
-        working-directory: terraform
-        env:
-          TF_VAR_some_secret: ${{ secrets.terraform }}
