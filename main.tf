@@ -2,27 +2,54 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.0"
+      version = "~> 3.0"
     }
   }
+  required_version = ">= 1.3.0"
 }
 
 provider "azurerm" {
   features {}
-
-  subscription_id = "b6fe4715-d2b2-42ab-8084-deaa26fcb5be"
-  tenant_id       = "e3b33809-b82f-41d9-89f8-615c1232eeec"
 }
 
-resource "azurerm_resource_group" "rg_resource" {
-  name     = "rg_resource"
-  location = "UK South"
+# ---------------- Resource Group ----------------
+resource "azurerm_resource_group" "starterkit" {
+  name     = var.resource_group
+  location = var.location
 }
 
-resource "azurerm_service_plan" "app_plan" {
-  name                = "ybee-app_plan"
-  location            = azurerm_resource_group.rg_resource.location
-  resource_group_name = azurerm_resource_group.rg_resource.name
-  os_type             = "Windows"
-  sku_name            = "B1"
+# ---------------- Storage Account ----------------
+resource "azurerm_storage_account" "starterkit" {
+  name                     = var.storage_account_name
+  resource_group_name      = azurerm_resource_group.starterkit.name
+  location                 = azurerm_resource_group.starterkit.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+# ---------------- Storage Container ----------------
+resource "azurerm_storage_container" "starterkit" {
+  name                  = var.storage_container_name
+  storage_account_name  = azurerm_storage_account.starterkit.name
+  container_access_type = "private"
+}
+
+# ---------------- Storage Management Policy ----------------
+resource "azurerm_storage_management_policy" "starterkit_policy" {
+  storage_account_id = azurerm_storage_account.starterkit.id
+
+  rule {
+    name    = "cleanup"
+    enabled = true
+
+    filters {
+      blob_types = ["blockBlob"]
+    }
+
+    actions {
+      base_blob {
+        delete_after_days_since_modification_greater_than = 30
+      }
+    }
+  }
 }
